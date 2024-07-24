@@ -4,7 +4,7 @@ pipeline {
         stage ("Clean up"){
             steps {
                 sh 'rm -rf /home/vboxuser/.jenkins/workspace/astonvilla-app/*'
-                sh 'ls'
+                sh 'ls -al'/home/vboxuser/.jenkins/workspace/astonvilla-app'
             }
         }
         stage ("Clone repo"){
