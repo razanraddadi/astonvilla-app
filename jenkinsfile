@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage ("Clean up"){
             steps {
-                sh 'rm -rf /home/vboxuser/.jenkins/workspace/astonvilla/*'
+                sh 'rm -rf /home/vboxuser/.jenkins/workspace/astonvilla-app/*'
                 sh 'ls'
             }
         }
@@ -14,14 +14,14 @@ pipeline {
         }
         stage ("Generate docker image") {
             steps {
-                 dir("astonvilla"){
+                 dir("astonvilla-app"){
                     sh "docker build -t razanraddadi/astonvilla-app:1.1.${env.BUILD_NUMBER} ."
                 }                
             }
         }
         stage ("push docker image") {
             steps {
-                 dir("astonvilla"){
+                 dir("astonvilla-app"){
                     sh "docker push razanraddadi/astonvilla-app:1.1.${env.BUILD_NUMBER}"
                 }                
             }
