@@ -1,68 +1,29 @@
 pipeline {
-    agent any
+    agent any 
     stages {
-        stage('Clean Workspace') {
+        stage ("Clean up"){
             steps {
-                script {
-                    // Remove the workspace directory if it exists
-                    sh '''
-                    if [ -d "/root/.jenkins/workspace/astonvilla-app" ]; then
-                        echo "Removing existing workspace directory"
-                        rm -rf /root/.jenkins/workspace/astonvilla-app
-                    else
-                        echo "Directory does not exist, nothing to remove"
-                    fi
-                    '''
-                }
+                sh 'rm -rf /home/vboxuser/.jenkins/workspace/astonvilla-app/*'
+                sh 'ls '
+}
+        }
+        stage ("Clone repo"){
+            steps {
+                sh "git clone https://github.com/razanraddadi/astonvilla-app.git"
             }
         }
-
-        stage('Clean up') {
+        stage ("Generate docker image") {
             steps {
-                script {
-                    // Ensure that the directory exists before cleaning up
-                    sh '''
-                    if [ -d "/root/.jenkins/workspace/astonvilla-app" ]; then
-                        echo "Cleaning up workspace"
-                        rm -rf /root/.jenkins/workspace/astonvilla-app/*
-                        ls /root/.jenkins/workspace/astonvilla-app
-                    else
-                        echo "Directory does not exist, skipping cleanup"
-                    fi
-                    '''
-                }
-            }
-        }
-
-        stage('Clone repo') {
-            steps {
-                script {
-                    // Clone the repository, handle if directory exists
-                    sh '''
-                    if [ -d "astonvilla-app" ]; then
-                        echo "Directory 'astonvilla-app' already exists, removing it"
-                        rm -rf astonvilla-app
-                    fi
-                    echo "Cloning repository"
-                    git clone https://github.com/razanraddadi/astonvilla-app.git
-                    '''
-                }
-            }
-        }
-
-        stage('Generate Docker Image') {
-            steps {
-                dir('astonvilla-app') {
+                 dir("astonvilla-app"){
                     sh "docker build -t razanraddadi/astonvilla-app:1.1.${env.BUILD_NUMBER} ."
-                }
+                }                
             }
         }
-
-        stage('Push Docker Image') {
+        stage ("push docker image") {
             steps {
-                dir('astonvilla-app') {
+                 dir("astonvilla-app"){
                     sh "docker push razanraddadi/astonvilla-app:1.1.${env.BUILD_NUMBER}"
-                }
+                }                
             }
         }
     }
