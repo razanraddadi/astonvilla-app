@@ -6,30 +6,36 @@ pipeline {
                 script {
                     sh 'rm -rf /home/vboxuser/.jenkins/workspace/astonvilla-app'
                 }
-        stage ("Clean up"){
+            } // Close 'script' block
+        } // Close 'Clean Workspace' stage
+
+        stage('Clean up') {
             steps {
                 sh 'rm -rf /home/vboxuser/.jenkins/workspace/astonvilla-app/*'
                 sh 'ls'
             }
-        }
-        stage ("Clone repo"){
+        } // Close 'Clean up' stage
+
+        stage('Clone repo') {
             steps {
-                sh "git clone https://github.com/razanraddadi/astonvilla-app.git"
+                sh 'git clone https://github.com/razanraddadi/astonvilla-app.git'
             }
-        }
-        stage ("Generate docker image") {
+        } // Close 'Clone repo' stage
+
+        stage('Generate docker image') {
             steps {
-                 dir("astonvilla-app"){
-                    sh "docker build -t razanraddadi/astonvilla-app:1.1.${env.BUILD_NUMBER} ."
-                }                
+                dir('astonvilla-app') {
+                    sh 'docker build -t razanraddadi/astonvilla-app:1.1.${env.BUILD_NUMBER} .'
+                }
             }
-        }
-        stage ("push docker image") {
+        } // Close 'Generate docker image' stage
+
+        stage('Push docker image') {
             steps {
-                 dir("astonvilla-app"){
-                    sh "docker push razanraddadi/astonvilla-app:1.1.${env.BUILD_NUMBER}"
-                }                
+                dir('astonvilla-app') {
+                    sh 'docker push razanraddadi/astonvilla-app:1.1.${env.BUILD_NUMBER}'
+                }
             }
-        }
-    }
-}
+        } // Close 'Push docker image' stage
+    } // Close 'stages'
+} // Close 'pipeline'
