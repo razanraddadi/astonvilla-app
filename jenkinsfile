@@ -14,14 +14,14 @@ pipeline {
         }
         stage ("Generate docker image") {
             steps {
-                 dir("astonvilla-app"){
+                 dir("astonvilla"){
                     sh "docker build -t razanraddadi/astonvilla-app:1.1.${env.BUILD_NUMBER} ."
                 }                
             }
         }
         stage ("push docker image") {
             steps {
-                 dir("astonvilla-app"){
+                 dir("astonvilla"){
                     sh "docker push razanraddadi/astonvilla-app:1.1.${env.BUILD_NUMBER}"
                 }                
             }
