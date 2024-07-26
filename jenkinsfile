@@ -4,21 +4,45 @@ pipeline {
         stage('Clean Workspace') {
             steps {
                 script {
-                    sh 'rm -rf /home/vboxuser/.jenkins/workspace/astonvilla-app'
+                    // Check if directory exists and remove it if necessary
+                    sh '''
+                    if [ -d "/home/vboxuser/.jenkins/workspace/astonvilla-app" ]; then
+                        echo "Removing existing workspace directory"
+                        rm -rf /home/vboxuser/.jenkins/workspace/astonvilla-app
+                    else
+                        echo "Directory does not exist, nothing to remove"
+                    fi
+                    '''
                 }
             }
         }
 
         stage('Clean up') {
             steps {
-                sh 'rm -rf /home/vboxuser/.jenkins/workspace/astonvilla-app/*'
-                sh 'ls'
+                script {
+                    // Clean up remaining files in the workspace
+                    sh '''
+                    echo "Cleaning up workspace"
+                    rm -rf /home/vboxuser/.jenkins/workspace/astonvilla-app/*
+                    ls /home/vboxuser/.jenkins/workspace/astonvilla-app
+                    '''
+                }
             }
         }
 
         stage('Clone repo') {
             steps {
-                sh 'git clone https://github.com/razanraddadi/astonvilla-app.git'
+                script {
+                    // Clone the repository, handle if directory exists
+                    sh '''
+                    if [ -d "astonvilla-app" ]; then
+                        echo "Directory 'astonvilla-app' already exists, removing it"
+                        rm -rf astonvilla-app
+                    fi
+                    echo "Cloning repository"
+                    git clone https://github.com/razanraddadi/astonvilla-app.git
+                    '''
+                }
             }
         }
 
