@@ -4,7 +4,7 @@ pipeline {
         stage('Clean Workspace') {
             steps {
                 script {
-                    // Check if directory exists and remove it if necessary
+                    // Remove the workspace directory if it exists
                     sh '''
                     if [ -d "/home/vboxuser/.jenkins/workspace/astonvilla-app" ]; then
                         echo "Removing existing workspace directory"
@@ -20,11 +20,15 @@ pipeline {
         stage('Clean up') {
             steps {
                 script {
-                    // Clean up remaining files in the workspace
+                    // Ensure that the directory exists before cleaning up
                     sh '''
-                    echo "Cleaning up workspace"
-                    rm -rf /home/vboxuser/.jenkins/workspace/astonvilla-app/*
-                    ls /home/vboxuser/.jenkins/workspace/astonvilla-app
+                    if [ -d "/home/vboxuser/.jenkins/workspace/astonvilla-app" ]; then
+                        echo "Cleaning up workspace"
+                        rm -rf /home/vboxuser/.jenkins/workspace/astonvilla-app/*
+                        ls /home/vboxuser/.jenkins/workspace/astonvilla-app
+                    else
+                        echo "Directory does not exist, skipping cleanup"
+                    fi
                     '''
                 }
             }
